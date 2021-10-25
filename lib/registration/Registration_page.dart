@@ -3,13 +3,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:one/appbar/custom_appbar.dart';
-import 'package:one/registration/Registration_controller.dart';
+import 'package:one/registration/auth_controller.dart';
 import '../images.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class RegistrationPage extends StatelessWidget {
-  final RegistrationController registrationController =
-      Get.put(RegistrationController());
+  final AuthController authController = Get.put(AuthController());
   @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormBuilderState>();
@@ -19,7 +18,7 @@ class RegistrationPage extends StatelessWidget {
         body: Container(
             width: double.infinity,
             child: Obx(() {
-              if (registrationController.googleSignInAccount.value == null) {
+              if (authController.googleSignInAccount.value == null) {
                 return signInPage(_formKey, context);
               } else {
                 return userPage();
@@ -28,7 +27,9 @@ class RegistrationPage extends StatelessWidget {
   }
 
   Container userPage() {
-    return Container(child: Text('mmm'),);
+    return Container(
+      child: Text('mmm'),
+    );
   }
 
   ListView signInPage(
@@ -57,7 +58,7 @@ class RegistrationPage extends StatelessWidget {
                       FormBuilderValidators.email(context),
                       FormBuilderValidators.maxLength(context, 50),
                     ]),
-                    controller: registrationController.email,
+                    controller: authController.email,
                     textInputAction: TextInputAction.next,
                     name: 'Email',
                     decoration: InputDecoration(labelText: "Email"),
@@ -73,7 +74,7 @@ class RegistrationPage extends StatelessWidget {
                       FormBuilderValidators.minLength(context, 8),
                       FormBuilderValidators.maxLength(context, 50),
                     ]),
-                    controller: registrationController.password,
+                    controller: authController.password,
                     textInputAction: TextInputAction.done,
                     name: 'Password',
                     decoration: InputDecoration(labelText: "Password"),
@@ -107,7 +108,7 @@ class RegistrationPage extends StatelessWidget {
                         onPressed: () {
                           _formKey.currentState!.save();
                           if (_formKey.currentState!.validate()) {
-                            registrationController.create();
+                            authController.create();
                           } else {
                             print("validation works");
                           }
@@ -176,7 +177,7 @@ class RegistrationPage extends StatelessWidget {
                                       style: TextStyle(fontSize: 14)),
                                 ],
                               ),
-                              onPressed: registrationController.signWithgoogle,
+                              onPressed: authController.signWithgoogle,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(25.0)),
                             ),

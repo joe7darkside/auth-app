@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:one/signin/signin_controller.dart';
+import 'package:one/registration/auth_controller.dart';
 import '../../images.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class ForgotPasswordPage extends StatelessWidget {
-  final SignInController signInController = Get.put(SignInController());
+  final AuthController signInController = Get.put(AuthController());
   @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormBuilderState>();

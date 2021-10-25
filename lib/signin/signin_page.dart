@@ -3,17 +3,18 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:one/appbar/custom_appbar.dart';
-import 'package:one/signin/signin_controller.dart';
+import 'package:one/registration/auth_controller.dart';
 import '../../images.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class SignInPage extends StatelessWidget {
-  final SignInController signInController = Get.put(SignInController());
+  final AuthController authController = Get.put(AuthController());
   @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormBuilderState>();
 
-    return Scaffold(appBar: customAppBar(),
+    return Scaffold(
+      appBar: customAppBar(),
       body: Container(
         width: double.infinity,
         child: ListView(
@@ -40,7 +41,7 @@ class SignInPage extends StatelessWidget {
                           FormBuilderValidators.email(context),
                           FormBuilderValidators.maxLength(context, 50),
                         ]),
-                        controller: signInController.email,
+                        controller: authController.email,
                         textInputAction: TextInputAction.next,
                         name: 'Email',
                         decoration: InputDecoration(labelText: "Email"),
@@ -56,7 +57,7 @@ class SignInPage extends StatelessWidget {
                           FormBuilderValidators.minLength(context, 8),
                           FormBuilderValidators.maxLength(context, 50),
                         ]),
-                        controller: signInController.password,
+                        controller: authController.password,
                         textInputAction: TextInputAction.done,
                         name: 'Password',
                         decoration: InputDecoration(labelText: "Password"),
@@ -92,7 +93,7 @@ class SignInPage extends StatelessWidget {
                             onPressed: () {
                               _formKey.currentState!.save();
                               if (_formKey.currentState!.validate()) {
-                                signInController.signIn();
+                                authController.signIn();
                               } else {
                                 print("validation works");
                               }
