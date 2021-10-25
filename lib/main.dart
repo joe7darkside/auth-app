@@ -6,7 +6,7 @@ import 'registration/Registration_page.dart';
 import 'forgot_password/forgot_password_page.dart';
 import 'signin/signin_page.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
