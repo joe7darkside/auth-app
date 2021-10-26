@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
 
 // class CustomAppBar extends StatelessWidget {
 //   // const AppBar({Key? key}) : super(key: key);
@@ -9,9 +9,9 @@ import 'package:flutter/material.dart';
 //   }
 // }
 
-PreferredSizeWidget customAppBar() {
-  return AppBar(
-    backgroundColor: Colors.transparent,
-    elevation: 0,
-  );
-}
+// PreferredSizeWidget customAppBar() {
+//   return AppBar(
+//     backgroundColor: Colors.transparent,
+//     elevation: 0,
+//   );
+// }

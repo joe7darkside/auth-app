@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
@@ -7,15 +9,17 @@ class AuthController extends GetxController {
   var googleSignInAccount = Rx<GoogleSignInAccount?>(null);
   final email = TextEditingController();
   final password = TextEditingController();
-  // final formKey = GlobalKey<FormState>();
-  var isLogin = false.obs;
-  signout() async {
-    auth.FirebaseAuth.instance.signOut();
-    isLogin.value = false;
-  }
+  late StreamSubscription<User?> user;
 
   @override
   void onInit() {
+    user = FirebaseAuth.instance.authStateChanges().listen((user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        print('User is signed in!');
+      }
+    });
     email.text = "";
     password.text = "";
     super.onInit();
@@ -23,9 +27,23 @@ class AuthController extends GetxController {
 
   @override
   void onClose() {
+    // user.cancel();
     email.dispose();
     password.dispose();
     super.onClose();
+  }
+
+//Signout
+  signout() async {
+    try {
+      await auth.FirebaseAuth.instance.signOut();
+      await GoogleSignIn().signOut();
+      Get.offAllNamed(
+        '/signIn',
+      );
+    } catch (e) {
+      print(e);
+    }
   }
 
 //Registration with email and password
@@ -33,32 +51,47 @@ class AuthController extends GetxController {
     try {
       auth.FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: email.text, password: password.text);
-      isLogin.value = true;
+      Get.toNamed('/homePage');
     } on auth.FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
-      }
+      print(e);
+      // if (e.code == 'weak-password') {
+      //   print('The password provided is too weak.');
+      // } else if (e.code == 'email-already-in-use') {
+      //   print('The account already exists for that email.');
+      // }
     }
   }
 
 //Registration with google
   Future signWithgoogle() async {
-    googleSignInAccount.value = await GoogleSignIn().signIn();
-    isLogin.value = true;
+    try {
+      googleSignInAccount.value = await GoogleSignIn().signIn();
+
+      Get.toNamed('/homePage');
+    } on auth.FirebaseAuthException catch (e) {
+      print(e);
+    }
   }
 
+// //Signout from google
+//   void signOutGoogle() {
+//     GoogleSignIn().signOut();
+//   }
+
+//Signin
   void signIn() async {
     try {
       auth.FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email.text, password: password.text);
+      Get.toNamed('/homePage');
     } on auth.FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
-      }
+      print(e);
+
+      // if (e.code == 'weak-password') {
+      //   print('The password provided is too weak.');
+      // } else if (e.code == 'email-already-in-use') {
+      //   print('The account already exists for that email.');
+      // }
     }
   }
 }
