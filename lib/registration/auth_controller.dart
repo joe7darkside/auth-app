@@ -9,8 +9,8 @@ class AuthController extends GetxController {
   var googleSignInAccount = Rx<GoogleSignInAccount?>(null);
   final email = TextEditingController();
   final password = TextEditingController();
-  late StreamSubscription<User?> user;
-
+  StreamSubscription<User?>? user;
+  User? _user = auth.FirebaseAuth.instance.currentUser;
   @override
   void onInit() {
     user = FirebaseAuth.instance.authStateChanges().listen((user) {
@@ -33,6 +33,13 @@ class AuthController extends GetxController {
     super.onClose();
   }
 
+  verifyEmail() async {
+    if (_user != null && !_user!.emailVerified) {
+      await _user!.sendEmailVerification();
+      print('Link sent to your email');
+    }
+  }
+
 //Signout
   signout() async {
     try {
@@ -49,9 +56,17 @@ class AuthController extends GetxController {
 //Registration with email and password
   void create() async {
     try {
-      auth.FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: email.text, password: password.text);
-      Get.toNamed('/homePage');
+      auth.FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: email.text, password: password.text)
+          .then((value) => verifyEmail())
+          .then((value) => Get.toNamed('/homePage'));
+
+      // if (_user!.emailVerified) {
+      //   Get.toNamed('/homePage');
+      // } else {
+      //   Get.toNamed('/verifying');
+      // }
     } on auth.FirebaseAuthException catch (e) {
       print(e);
       // if (e.code == 'weak-password') {
