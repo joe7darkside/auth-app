@@ -25,18 +25,22 @@ class AuthController extends GetxController {
     super.onInit();
   }
 
-  @override
-  void onClose() {
-    // user.cancel();
-    email.dispose();
-    password.dispose();
-    super.onClose();
-  }
+  // @override
+  // void onClose() {
+  //   // user.cancel();
+  //   email.dispose();
+  //   password.dispose();
+  //   super.onClose();
+  // }
 
   verifyEmail() async {
     if (_user != null && !_user!.emailVerified) {
       await _user!.sendEmailVerification();
+      Get.toNamed('/verifying');
+
       print('Link sent to your email');
+    } else {
+      Get.toNamed('/homePage');
     }
   }
 
@@ -45,9 +49,11 @@ class AuthController extends GetxController {
     try {
       await auth.FirebaseAuth.instance.signOut();
       await GoogleSignIn().signOut();
-      Get.offAllNamed(
-        '/signIn',
-      );
+      if (_user == null) {
+        Get.offAllNamed(
+          '/signIn',
+        );
+      }
     } catch (e) {
       print(e);
     }
@@ -59,21 +65,9 @@ class AuthController extends GetxController {
       auth.FirebaseAuth.instance
           .createUserWithEmailAndPassword(
               email: email.text, password: password.text)
-          .then((value) => verifyEmail())
-          .then((value) => Get.toNamed('/homePage'));
-
-      // if (_user!.emailVerified) {
-      //   Get.toNamed('/homePage');
-      // } else {
-      //   Get.toNamed('/verifying');
-      // }
+          .then((value) => verifyEmail());
     } on auth.FirebaseAuthException catch (e) {
       print(e);
-      // if (e.code == 'weak-password') {
-      //   print('The password provided is too weak.');
-      // } else if (e.code == 'email-already-in-use') {
-      //   print('The account already exists for that email.');
-      // }
     }
   }
 
@@ -88,11 +82,6 @@ class AuthController extends GetxController {
     }
   }
 
-// //Signout from google
-//   void signOutGoogle() {
-//     GoogleSignIn().signOut();
-//   }
-
 //Signin
   void signIn() async {
     try {
@@ -101,12 +90,6 @@ class AuthController extends GetxController {
       Get.toNamed('/homePage');
     } on auth.FirebaseAuthException catch (e) {
       print(e);
-
-      // if (e.code == 'weak-password') {
-      //   print('The password provided is too weak.');
-      // } else if (e.code == 'email-already-in-use') {
-      //   print('The account already exists for that email.');
-      // }
     }
   }
 }
